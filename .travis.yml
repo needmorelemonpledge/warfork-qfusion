@@ -6,55 +6,62 @@ cache:
     - $HOME/.deps
 notifications:
   email: false
-
 matrix:
   include:
     - os: osx
+      osx_image: xcode10.3
       env: QF_ARCH=OSX
       language: c++
       compiler: clang
     - os: linux
       language: c++
-      compiler: gcc-4.9
-      env: QF_ARCH=x86
-      addons:
-        apt:
-          update: true
-          packages:
-            - gcc-4.9
-            - g++-4.9
-            - cmake
-            - build-essential
-            - gcc-multilib
-    - os: linux
-      language: c++
-      compiler: gcc-4.9
+      compiler: clang
       env: QF_ARCH=x86_64
       addons:
         apt:
           update: true
           packages:
-            - gcc-4.9
-            - g++-4.9
+            - clang
             - cmake
-            - build-essential
+            - ninja-build
             - libsdl2-dev
-            - libopenal-dev
             - libvorbis-dev
-            - libtheora-dev
             - libfreetype6-dev
             - zlib1g-dev
+            - libpulse-dev
+            - libpulse0=1:8.0-0ubuntu3.10
+            - libpulse-mainloop-glib0=1:8.0-0ubuntu3.10
+            - libopenal-dev
+            - libtheora-dev
             - libcurl4-gnutls-dev
 
-before_install:
-
 install:
-  - if [[ "$QF_ARCH" == "x86_64" ]] && [ ! -e "$HOME/.deps/$QF_ARCH/lib/pkgconfig/sdl2.pc" ]; then mkdir -p $HOME/.deps/$QF_ARCH && cd $HOME/.deps/$QF_ARCH && curl -O http://www.libsdl.org/release/SDL2-2.0.4.tar.gz && tar -xzvf SDL2-2.0.4.tar.gz && cd SDL2-2.0.4 && ./configure --prefix="$HOME/.deps/$QF_ARCH" && make && make install && cd .. && rm -rf SDL2-2.0.4 && cd "$TRAVIS_BUILD_DIR"; fi
-  - if [[ "$QF_ARCH" == "x86_64" ]]; then export CC=gcc-4.9 CXX=g++-4.9; fi
-  - if [[ "$QF_ARCH" == "x86" ]]; then export CC=gcc-4.9 CXX=g++-4.9; fi
+  - if [[ "$QF_ARCH" == "x86_64" ]]; then export CC=clang CXX=clang++; fi
+  - cd "$TRAVIS_BUILD_DIR/source"
+  - if [[ "$QF_ARCH" == "x86_64" ]]; then cmake -G Ninja .; fi
+  - if [[ "$QF_ARCH" == "OSX" ]]; then cmake -G Xcode .; fi
+  - cd "$TRAVIS_BUILD_DIR"
 
 script:
   - cd source
-  - if [[ "$QF_ARCH" == "x86_64" ]]; then export SDL2DIR="$HOME/.deps/$QF_ARCH" && cmake . && make; fi
-  - if [[ "$QF_ARCH" == "x86" ]]; then cmake -DCMAKE_TOOLCHAIN_FILE=cmake/i386-linux-gnu.cmake -DGAME_MODULES_ONLY=1 . && make game cgame; fi
-  - if [[ "$QF_ARCH" == "OSX" ]]; then cmake -G Xcode . && xcodebuild -project qfusion.xcodeproj/ -configuration Release -target ALL_BUILD; fi
+  - if [[ "$QF_ARCH" == "x86_64" ]]; then ninja; fi
+  - if [[ "$QF_ARCH" == "OSX" ]]; then xcodebuild -project qfusion.xcodeproj/ -jobs 4 -configuration Release -scheme ALL_BUILD | xcpretty; fi
+before_deploy:
+  - cd build
+  - echo "${TRAVIS_COMMIT}" >commit.txt
+  - if [[ "$QF_ARCH" == "OSX" ]]; then cd Release && tar -czvf ../../tmp.tar.gz *.app && cd ..; fi
+  - if [[ "$QF_ARCH" != "OSX" ]]; then tar -czvf ../tmp.tar.gz * --exclude *.a --exclude base*/*.a libs/*.a; fi
+  - cd ..
+  - mv tmp.tar.gz ${QF_ARCH}-Release.tar.gz
+
+deploy:
+  provider: releases
+  api_key:
+  secure:
+  skip_cleanup: true
+  file_glob: true
+  file: "*-Release.tar.gz"
+  overwrite: true
+  on:
+    repo: warfork/warfork-qfusion
+    tags: true
