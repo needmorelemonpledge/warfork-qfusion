@@ -1446,6 +1446,7 @@ static const asProperty_t scorestats_Properties[] =
 	{ ASLIB_PROPERTY_DECL(const int, frags), ASLIB_FOFFSET(score_stats_t, frags) },
 	{ ASLIB_PROPERTY_DECL(const int, suicides), ASLIB_FOFFSET(score_stats_t, suicides) },
 	{ ASLIB_PROPERTY_DECL(const int, teamFrags), ASLIB_FOFFSET(score_stats_t, teamfrags) },
+	{ ASLIB_PROPERTY_DECL(const int, numrounds), ASLIB_FOFFSET(score_stats_t, numrounds) },
 	{ ASLIB_PROPERTY_DECL(const int, awards), ASLIB_FOFFSET(score_stats_t, awards) },
 	{ ASLIB_PROPERTY_DECL(const int, totalDamageGiven), ASLIB_FOFFSET(score_stats_t, total_damage_given) },
 	{ ASLIB_PROPERTY_DECL(const int, totalDamageReceived), ASLIB_FOFFSET(score_stats_t, total_damage_received) },
@@ -1453,6 +1454,19 @@ static const asProperty_t scorestats_Properties[] =
 	{ ASLIB_PROPERTY_DECL(const int, totalTeamDamageReceived), ASLIB_FOFFSET(score_stats_t, total_teamdamage_received) },
 	{ ASLIB_PROPERTY_DECL(const int, healthTaken), ASLIB_FOFFSET(score_stats_t, health_taken) },
 	{ ASLIB_PROPERTY_DECL(const int, armorTaken), ASLIB_FOFFSET(score_stats_t, armor_taken) },
+	{ ASLIB_PROPERTY_DECL(const int, ga_taken), ASLIB_FOFFSET(score_stats_t, ga_taken) },
+	{ ASLIB_PROPERTY_DECL(const int, ya_taken), ASLIB_FOFFSET(score_stats_t, ya_taken) },
+	{ ASLIB_PROPERTY_DECL(const int, ra_taken), ASLIB_FOFFSET(score_stats_t, ra_taken) },
+	{ ASLIB_PROPERTY_DECL(const int, mh_taken), ASLIB_FOFFSET(score_stats_t, mh_taken) },
+	{ ASLIB_PROPERTY_DECL(const int, uh_taken), ASLIB_FOFFSET(score_stats_t, uh_taken) },
+	{ ASLIB_PROPERTY_DECL(const int, quads_taken), ASLIB_FOFFSET(score_stats_t, quads_taken) },
+	{ ASLIB_PROPERTY_DECL(const int, shells_taken), ASLIB_FOFFSET(score_stats_t, shells_taken) },
+	{ ASLIB_PROPERTY_DECL(const int, regens_taken), ASLIB_FOFFSET(score_stats_t, regens_taken) },
+	{ ASLIB_PROPERTY_DECL(const int, bombs_planted), ASLIB_FOFFSET(score_stats_t, bombs_planted) },
+	{ ASLIB_PROPERTY_DECL(const int, bombs_defused), ASLIB_FOFFSET(score_stats_t, bombs_defused) },
+	{ ASLIB_PROPERTY_DECL(const int, flags_capped), ASLIB_FOFFSET(score_stats_t, flags_capped) },
+	{ ASLIB_PROPERTY_DECL(const int, fairplay_count), ASLIB_FOFFSET(score_stats_t, fairplay_count) },
+	{ ASLIB_PROPERTY_DECL(const bool, had_playtime), ASLIB_FOFFSET(score_stats_t, had_playtime) },
 
 	ASLIB_PROPERTY_NULL
 };
