@@ -1316,6 +1316,9 @@ void CG_AddPModel( centity_t *cent )
 
 	CG_AddHeadIcon( cent );
 
+    if( cg_showPlayerTrails->value )
+        CG_AddLinearTrail( cent, cg_showPlayerTrails->value );
+	
 	// add teleporter sfx if needed
 	CG_PModel_SpawnTeleportEffect( cent );
 

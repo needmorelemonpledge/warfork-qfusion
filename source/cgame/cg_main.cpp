@@ -84,6 +84,8 @@ cvar_t *cg_predictLaserBeam;
 cvar_t *cg_voiceChats;
 cvar_t *cg_shadows;
 cvar_t *cg_showSelfShadow;
+cvar_t *cg_showPlayerTrails;
+cvar_t *cg_playerTrailsColor;
 cvar_t *cg_laserBeamSubdivisions;
 cvar_t *cg_projectileAntilagOffset;
 cvar_t *cg_raceGhosts;
@@ -817,6 +819,9 @@ static void CG_RegisterVariables( void )
 
 	cg_voiceChats =		trap_Cvar_Get( "cg_voiceChats", "1", CVAR_ARCHIVE );
 	cg_shadows =		trap_Cvar_Get( "cg_shadows", "1", CVAR_ARCHIVE );
+
+    cg_showPlayerTrails =    trap_Cvar_Get( "cg_showPlayerTrails", "0", CVAR_ARCHIVE );
+    cg_playerTrailsColor =   trap_Cvar_Get( "cg_playerTrailsColor", "0.0 1.0 0.0", CVAR_ARCHIVE );
 
 	cg_laserBeamSubdivisions = trap_Cvar_Get( "cg_laserBeamSubdivisions", "10", CVAR_ARCHIVE );
 	cg_projectileAntilagOffset = trap_Cvar_Get( "cg_projectileAntilagOffset", "1.0", CVAR_ARCHIVE );
