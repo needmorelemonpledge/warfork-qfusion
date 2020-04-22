@@ -1,5 +1,5 @@
 sudo: false
-dist: xenial
+dist: bionic
 cache: 
   apt: true
   directories:
@@ -16,6 +16,19 @@ matrix:
     - os: linux
       language: c++
       compiler: clang
+      env: QF_ARCH=x86
+      addons:
+        apt:
+          sources:
+            - kubuntu-backports
+            - ubuntu-toolchain-r-test
+          packages:
+            - clang
+            - cmake
+            - gcc-multilib
+    - os: linux
+      language: c++
+      compiler: clang
       env: QF_ARCH=x86_64
       addons:
         apt:
@@ -23,28 +36,30 @@ matrix:
           packages:
             - clang
             - cmake
-            - ninja-build
             - libsdl2-dev
+            - libopenal-dev
+            - libtheora-dev
+            - libcurl4-gnutls-dev
             - libvorbis-dev
             - libfreetype6-dev
             - zlib1g-dev
             - libpulse-dev
-            - libpulse0=1:8.0-0ubuntu3.10
-            - libpulse-mainloop-glib0=1:8.0-0ubuntu3.10
-            - libopenal-dev
-            - libtheora-dev
-            - libcurl4-gnutls-dev
+            - libpulse0=1:11.1-1ubuntu7.5
+            - libpulse-mainloop-glib0=1:11.1-1ubuntu7.5
 
 install:
   - if [[ "$QF_ARCH" == "x86_64" ]]; then export CC=clang CXX=clang++; fi
+  - if [[ "$QF_ARCH" == "x86" ]]; then export CC=clang CXX=clang++; fi
   - cd "$TRAVIS_BUILD_DIR/source"
-  - if [[ "$QF_ARCH" == "x86_64" ]]; then cmake -G Ninja .; fi
+  - if [[ "$QF_ARCH" == "x86_64" ]]; then cmake .; fi
+  - if [[ "$QF_ARCH" == "x86" ]]; then cmake -DCMAKE_TOOLCHAIN_FILE=cmake/i386-linux-gnu.cmake -DCMAKE_C_FLAGS=-m32 -DCMAKE_CXX_FLAGS=-m32 -DGAME_MODULES_ONLY=1 .; fi
   - if [[ "$QF_ARCH" == "OSX" ]]; then cmake -G Xcode .; fi
   - cd "$TRAVIS_BUILD_DIR"
 
 script:
   - cd source
-  - if [[ "$QF_ARCH" == "x86_64" ]]; then ninja; fi
+  - if [[ "$QF_ARCH" == "x86_64" ]]; then make -j8; fi
+  - if [[ "$QF_ARCH" == "x86" ]]; then make -j8; fi
   - if [[ "$QF_ARCH" == "OSX" ]]; then xcodebuild -project qfusion.xcodeproj/ -jobs 4 -configuration Release -scheme ALL_BUILD | xcpretty; fi
 before_deploy:
   - cd build
@@ -53,15 +68,3 @@ before_deploy:
   - if [[ "$QF_ARCH" != "OSX" ]]; then tar -czvf ../tmp.tar.gz * --exclude *.a --exclude base*/*.a libs/*.a; fi
   - cd ..
   - mv tmp.tar.gz ${QF_ARCH}-Release.tar.gz
-
-deploy:
-  provider: releases
-  api_key:
-  secure:
-  skip_cleanup: true
-  file_glob: true
-  file: "*-Release.tar.gz"
-  overwrite: true
-  on:
-    repo: warfork/warfork-qfusion
-    tags: true
