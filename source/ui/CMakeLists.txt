@@ -43,16 +43,21 @@ file(GLOB ROCKET_CONTROLS_SOURCES
 	"${LIBROCKET_SOURCE_DIR}/Controls/*.inl"
 )
 
+file(GLOB NANOSVG_HEADERS
+	"${NANOSVG_INCLUDE_DIR}/*.h"
+)
+
 source_group("Rocket\\Header Files" FILES ${ROCKET_ROOT_HEADERS})
 source_group("Rocket\\Header Files\\Core" FILES ${ROCKET_CORE_HEADERS})
 source_group("Rocket\\Header Files\\Controls" FILES ${ROCKET_CONTROLS_HEADERS})
 source_group("Rocket\\Source Files\\Core" FILES ${ROCKET_CORE_SOURCES})
 source_group("Rocket\\Source Files\\Controls" FILES ${ROCKET_CONTROLS_SOURCES})
+source_group("nanosvg\\Header Files" FILES ${NANOSVG_HEADERS})
 
-include_directories(${ANGELSCRIPT_INCLUDE_DIR} ${LIBROCKET_INCLUDE_DIR})
+include_directories(${ANGELSCRIPT_INCLUDE_DIR} ${LIBROCKET_INCLUDE_DIR} ${NANOSVG_INCLUDE_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}) # for ui_precompiled.h
 
-add_library(ui SHARED ${ROCKET_ROOT_HEADERS} ${ROCKET_CORE_HEADERS} ${ROCKET_CONTROLS_HEADERS} ${ROCKET_CORE_SOURCES} ${ROCKET_CONTROLS_SOURCES} ${UI_SOURCES} ${UI_HEADERS})
+add_library(ui SHARED ${ROCKET_ROOT_HEADERS} ${ROCKET_CORE_HEADERS} ${ROCKET_CONTROLS_HEADERS} ${ROCKET_CORE_SOURCES} ${ROCKET_CONTROLS_SOURCES} ${NANOSVG_HEADERS} ${UI_SOURCES} ${UI_HEADERS})
 target_link_libraries(ui PRIVATE)
 add_dependencies(ui angelwrap)
 set_target_properties(ui PROPERTIES COMPILE_DEFINITIONS "ROCKET_STATIC_LIB;_SECURE_SCL=0")
